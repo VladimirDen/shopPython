@@ -12,10 +12,10 @@
     <title>Shop Homepage - Start Bootstrap Template</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css" >
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}" type="text/css">
     <script src="{% static 'js/scripts.js' %}"></script>
   </head>
 
@@ -67,7 +67,7 @@
         <!-- /.col-lg-3 -->
 
         <div class="col-lg-9">
-
+          {% block content %}
           <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
             <ol class="carousel-indicators">
               <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -195,7 +195,7 @@
 
           </div>
           <!-- /.row -->
-
+        {% endblock content %}
         </div>
         <!-- /.col-lg-9 -->
 
@@ -214,8 +214,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
   </body>
 

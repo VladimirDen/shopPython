@@ -5,7 +5,7 @@ from .models import Boiler, Pomp
 
 
 def createPage(request):
-    return render(request, 'mainchop/index.html', {})
+    return render(request, 'index.html', {})
 
 
 class ProductDetailView(DetailView):
@@ -21,5 +21,5 @@ class ProductDetailView(DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     context_object_name = 'product'
-    template_name = 'mainchop/product_detail.html'
+    template_name = 'product_detail.html'
     slug_url_kwarg = 'slug'

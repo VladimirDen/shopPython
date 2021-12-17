@@ -1,18 +1,15 @@
-from PIL import Image
-
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 
-
 User = get_user_model()
+
 
 def get_product_url(obj, viewname):
     ct_model = obj.__class__._meta.model_name
     return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
-
 
 
 class MinResolutionErrorException(Exception):
@@ -58,10 +55,6 @@ class Category(models.Model):
 
 class Product(models.Model):
 
-    MIN_RESOLUTION = (300, 300)
-    MAX_RESOLUTION = (800, 800)
-    MAX_IMAGE_SIZE = 3145728
-
     class Meta:
         abstract = True
 
@@ -75,16 +68,6 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        image = self.image
-        img = Image.open(image)
-        min_height, min_width = self.MIN_RESOLUTION
-        max_height, max_width = self.MAX_RESOLUTION
-        if img.height < min_height or img.width < min_width:
-            raise MinResolutionErrorException('Разрешение изображения меньше минимального')
-        if img.height > max_height or img.width > max_width:
-            raise MaxResolutionErrorException('Разрешение изображения больше максимального!')
-        super().save(*args, **kwargs)
 
 class Boiler(Product):
 
@@ -96,7 +79,7 @@ class Boiler(Product):
     combustion_chamber = models.CharField(max_length=10, verbose_name='Камера сгорания')
 
     def __str__(self):
-        return f'{self.category.name}:{self.title}'
+        return "{} : {}".format(self.category.name, self.title)
 
     def get_absolute_url(self):
         return get_product_url(self, 'product_detail')
@@ -113,7 +96,7 @@ class Pomp(Product):
     max_bar = models.CharField(max_length=5, verbose_name='Макс. рабочее давление')
 
     def __str__(self):
-        return f'{self.category.name}:{self.title}'
+        return "{} : {}".format(self.category.name, self.title)
 
     def get_absolute_url(self):
         return get_product_url(self, 'product_detail')
@@ -130,7 +113,7 @@ class CartProduct(models.Model):
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
 
     def __str__(self):
-        return f"Продукт: {self.product.title} Для корзины"
+        return f"Продукт: {self.content_object.title} Для корзины"
 
 
 class Cart(models.Model):
@@ -139,6 +122,8 @@ class Cart(models.Model):
     products = models.ManyToManyField(CartProduct, blank=True, related_name='related_card')
     total_products = models.PositiveIntegerField(default=0)
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
+    in_order = models.BooleanField(default=False)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
